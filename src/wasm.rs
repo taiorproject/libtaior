@@ -47,7 +47,7 @@ impl TaiorWasm {
         let packet = self.inner.send(data, opts)
             .map_err(|e| JsValue::from_str(&e))?;
 
-        Ok(packet.data().to_vec())
+        Ok(packet.encrypted_payload.clone())
     }
 
     #[wasm_bindgen(js_name = enableCoverTraffic)]
