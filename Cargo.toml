@@ -31,6 +31,11 @@ thiserror = "1.0"
 async-trait = "0.1"
 rand = "0.8"
 
+wasm-bindgen = { version = "0.2", optional = true }
+wasm-bindgen-futures = { version = "0.4", optional = true }
+console_error_panic_hook = { version = "0.1", optional = true }
+getrandom = { version = "0.2", features = ["js"] }
+
 [dev-dependencies]
 tokio = { version = "1", features = ["full"] }
 
@@ -39,3 +44,4 @@ default = ["fast-mode", "mix-mode"]
 fast-mode = []
 mix-mode = []
 adaptive-mode = []
+wasm = ["wasm-bindgen", "wasm-bindgen-futures", "console_error_panic_hook"]
