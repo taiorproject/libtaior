@@ -2,7 +2,7 @@ use blake3::Hasher;
 use rand_core::OsRng;
 use x25519_dalek::{EphemeralSecret, PublicKey};
 
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, serde::Serialize, serde::Deserialize)]
 pub struct TaiorAddress(pub String);
 
 impl TaiorAddress {

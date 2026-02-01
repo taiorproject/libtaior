@@ -1,11 +1,12 @@
 use crate::identity::TaiorAddress;
-use crate::packet::TaiorPacket;
 use crate::routing::Router;
 use chacha20poly1305::{aead::Aead, aead::KeyInit, ChaCha20Poly1305, Key, Nonce};
 use rand_core::{OsRng, RngCore};
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 use thiserror::Error;
+#[cfg(target_arch = "wasm32")]
+use js_sys;
 
 #[derive(Error, Debug)]
 pub enum CircuitError {
@@ -95,7 +96,7 @@ impl CircuitBuilder {
         }
 
         let mut circuit_nodes = Vec::with_capacity(hops);
-        let mut used_nodes = Vec::new();
+        let mut used_nodes: Vec<String> = Vec::new();
 
         for _ in 0..hops {
             let available: Vec<String> = self.available_nodes
@@ -112,8 +113,10 @@ impl CircuitBuilder {
                 available[0].clone()
             } else {
                 let mode_config = crate::modes::ModeConfig {
+                    mode: crate::modes::RoutingMode::Adaptive,
                     hops: (hops - circuit_nodes.len()) as u8,
-                    cover_traffic_rate: 0.0,
+                    cover_traffic: false,
+                    jitter_ms: None,
                     padding_size: 0,
                 };
 
@@ -221,12 +224,12 @@ mod tests {
     fn test_circuit_creation() {
         let nodes = vec![
             CircuitNode {
-                address: TaiorAddress::generate(),
+                address: TaiorAddress::generate().1,
                 shared_key: vec![0u8; 32],
                 nonce: vec![0u8; 12],
             },
             CircuitNode {
-                address: TaiorAddress::generate(),
+                address: TaiorAddress::generate().1,
                 shared_key: vec![1u8; 32],
                 nonce: vec![1u8; 12],
             },
@@ -241,7 +244,7 @@ mod tests {
     fn test_onion_encryption() {
         let nodes = vec![
             CircuitNode {
-                address: TaiorAddress::generate(),
+                address: TaiorAddress::generate().1,
                 shared_key: vec![0u8; 32],
                 nonce: vec![0u8; 12],
             },

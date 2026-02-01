@@ -1,8 +1,8 @@
-use crate::circuit::{Circuit, OnionEncryptor};
 use crate::packet::TaiorPacket;
 use rand_core::{OsRng, RngCore};
-use std::time::Duration;
 use thiserror::Error;
+#[cfg(target_arch = "wasm32")]
+use js_sys;
 
 #[derive(Error, Debug)]
 pub enum CoverTrafficError {

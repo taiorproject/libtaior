@@ -32,7 +32,7 @@ impl TaiorWasm {
     #[wasm_bindgen(js_name = addNode)]
     pub fn add_node(&mut self, node: String) {
         self.inner.add_node(node.clone());
-        let address = TaiorAddress::generate();
+        let (_, address) = TaiorAddress::generate();
         self.circuit_builder.add_node(node, address);
     }
 
@@ -48,8 +48,10 @@ impl TaiorWasm {
         }
         
         let mode_config = crate::modes::ModeConfig {
+            mode: crate::modes::RoutingMode::Adaptive,
             hops: remaining_hops as u8,
-            cover_traffic_rate: 0.0,
+            cover_traffic: false,
+            jitter_ms: None,
             padding_size: 0,
         };
         
@@ -92,7 +94,6 @@ impl TaiorWasm {
     }
 }
 
-#[wasm_bindgen(start)]
 pub fn init() {
     #[cfg(feature = "console_error_panic_hook")]
     console_error_panic_hook::set_once();

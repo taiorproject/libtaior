@@ -24,6 +24,7 @@ serde_json = "1.0"
 blake3 = "1.5"
 thiserror = "1.0"
 rand = "0.8"
+js-sys = { version = "0.3", optional = true }
 
 wasm-bindgen = { version = "0.2", optional = true }
 wasm-bindgen-futures = { version = "0.4", optional = true }
@@ -46,4 +47,4 @@ default = ["fast-mode", "mix-mode"]
 fast-mode = []
 mix-mode = []
 adaptive-mode = []
-wasm = ["wasm-bindgen", "wasm-bindgen-futures", "console_error_panic_hook"]
+wasm = ["wasm-bindgen", "wasm-bindgen-futures", "console_error_panic_hook", "js-sys"]
