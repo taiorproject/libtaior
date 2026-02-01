@@ -17,6 +17,9 @@ wasm-pack build --target bundler --out-dir pkg --features wasm
 echo "🔧 Fixing bundler compatibility..."
 sed -i.bak 's/wasm\.__wbindgen_start();/if (typeof wasm.__wbindgen_start === "function") wasm.__wbindgen_start();/' pkg/taior.js && rm pkg/taior.js.bak
 
+echo "🛠️  Setting scoped package metadata..."
+node -e "const fs=require('fs');const p='pkg/package.json';const pkg=JSON.parse(fs.readFileSync(p,'utf8'));pkg.name='@taiorproject/taior';pkg.publishConfig={registry:'https://npm.pkg.github.com'};fs.writeFileSync(p,JSON.stringify(pkg,null,2)+'\n');"
+
 echo "✅ WASM build complete!"
 echo ""
 echo "📁 Output directories:"
