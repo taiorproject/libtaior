@@ -11,7 +11,7 @@ pub mod cover_traffic;
 #[cfg(not(target_arch = "wasm32"))]
 pub mod transport;
 
-#[cfg(target_arch = "wasm32")]
+#[cfg(all(target_arch = "wasm32", feature = "wasm"))]
 pub mod wasm;
 
 pub use api::{Taior, SendOptions};

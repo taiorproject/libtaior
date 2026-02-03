@@ -1,7 +1,7 @@
 use crate::packet::TaiorPacket;
 use rand_core::{OsRng, RngCore};
 use thiserror::Error;
-#[cfg(target_arch = "wasm32")]
+#[cfg(all(target_arch = "wasm32", feature = "wasm"))]
 use js_sys;
 
 #[derive(Error, Debug)]
@@ -162,15 +162,20 @@ impl AdaptiveCoverTraffic {
 fn current_timestamp_ms() -> u64 {
     #[cfg(not(target_arch = "wasm32"))]
     {
-        std::time::SystemTime::now()
+        return std::time::SystemTime::now()
             .duration_since(std::time::UNIX_EPOCH)
             .unwrap()
-            .as_millis() as u64
+            .as_millis() as u64;
     }
     
-    #[cfg(target_arch = "wasm32")]
+    #[cfg(all(target_arch = "wasm32", feature = "wasm"))]
     {
-        js_sys::Date::now() as u64
+        return js_sys::Date::now() as u64;
+    }
+    
+    #[cfg(all(target_arch = "wasm32", not(feature = "wasm")))]
+    {
+        0 // Fallback para WASM sin feature
     }
 }
 

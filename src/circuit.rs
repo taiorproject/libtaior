@@ -5,7 +5,7 @@ use rand_core::{OsRng, RngCore};
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 use thiserror::Error;
-#[cfg(target_arch = "wasm32")]
+#[cfg(all(target_arch = "wasm32", feature = "wasm"))]
 use js_sys;
 
 #[derive(Error, Debug)]
@@ -204,15 +204,20 @@ fn generate_hop_keys() -> (Vec<u8>, Vec<u8>) {
 fn current_timestamp() -> u64 {
     #[cfg(not(target_arch = "wasm32"))]
     {
-        std::time::SystemTime::now()
+        return std::time::SystemTime::now()
             .duration_since(std::time::UNIX_EPOCH)
             .unwrap()
-            .as_secs()
+            .as_secs();
     }
     
-    #[cfg(target_arch = "wasm32")]
+    #[cfg(all(target_arch = "wasm32", feature = "wasm"))]
     {
-        (js_sys::Date::now() / 1000.0) as u64
+        return (js_sys::Date::now() / 1000.0) as u64;
+    }
+    
+    #[cfg(all(target_arch = "wasm32", not(feature = "wasm")))]
+    {
+        0 // Fallback para WASM sin feature
     }
 }
 
