@@ -31,11 +31,14 @@ impl Router {
             _ => aorp::interfaces::types::DiversityLevel::High,
         };
 
+        // Only enforce avoid_loops when there are enough neighbors to make it meaningful
+        let can_avoid_loops = neighbors.len() > 1;
+
         let policies = PolicyConstraints::builder()
             .require_diversity(diversity)
             .latency_weight(2)
             .bandwidth_weight(1)
-            .avoid_loops(true)
+            .avoid_loops(can_avoid_loops)
             .max_hops(config.hops)
             .build();
 
